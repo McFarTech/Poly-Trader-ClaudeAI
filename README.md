@@ -134,10 +134,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👨‍💻 Author
 
-Siraj Raval
+Craig McFarlane
 
 ## 🙏 Acknowledgements
 
+* Siraj Raval for original ChatGPT method
 * Anthropic for the Claude API
 * Polymarket team for the Agents SDK
 * All contributors and testers
