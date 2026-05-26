@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
-import openai
+import anthropic
 from datetime import datetime
 import os
 
-# Initialize OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize Anthropic client
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+
+def extract_text(response):
+    """Concatenate the text blocks from a Claude response."""
+    return "".join(block.text for block in response.content if block.type == "text")
+
 
 # Get profitable markets with detailed betting strategy
-result = client.chat.completions.create(
-    model="gpt-4o-search-preview",
+result = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1000,
     messages=[{"role": "user", "content": """Visit Polymarket.com right now and research the CURRENT real markets. Create a detailed, actionable betting strategy:
 
 1. Find 5 SPECIFIC markets currently trading on Polymarket that have high potential ROI
@@ -28,11 +35,10 @@ result = client.chat.completions.create(
 Focus on REAL markets currently available on Polymarket.com with exact numbers and calculations.
 Use a maximum of 250 words for your response to ensure all information fits in the output.
 """}],
-    max_tokens=1000,
-    web_search_options={}
+    tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 5}]
 )
 
 # Print results
 print(f"POLYMARKET BETTING STRATEGY ({datetime.now().strftime('%Y-%m-%d')})")
 print("=" * 80)
-print(result.choices[0].message.content) 
+print(extract_text(result))

@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-import openai
+import anthropic
 from datetime import datetime, timedelta
 import os
 
-# Initialize OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize Anthropic client
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+
+def extract_text(response):
+    """Concatenate the text blocks from a Claude response."""
+    return "".join(block.text for block in response.content if block.type == "text")
+
 
 # Get tomorrow's date
 tomorrow_date = datetime.now() + timedelta(days=1)
@@ -36,19 +42,17 @@ If these specific markets don't exist, please search carefully for any markets t
 """
 
 # Make the request
-response = client.chat.completions.create(
-    model="gpt-4o-search-preview",
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=2048,
+    system=f"You are a highly accurate research assistant specialized in prediction markets. Today is {datetime.now().strftime('%B %d, %Y')}. Your task is to search the web for specific Polymarket prediction markets ending on {tomorrow_display}. Be extremely precise and thorough in your search.",
     messages=[
-        {
-            "role": "system", 
-            "content": f"You are a highly accurate research assistant specialized in prediction markets. Today is {datetime.now().strftime('%B %d, %Y')}. Your task is to search the web for specific Polymarket prediction markets ending on {tomorrow_display}. Be extremely precise and thorough in your search."
-        },
         {"role": "user", "content": query}
     ],
-    web_search_options={}
+    tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 5}]
 )
 
 # Print the response
 print(f"POLYMARKET MARKETS ENDING ON {tomorrow_display}")
 print("=" * 80)
-print(response.choices[0].message.content) 
+print(extract_text(response))

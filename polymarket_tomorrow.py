@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-import openai
+import anthropic
 from datetime import datetime, timedelta
 import os
 
-# Initialize OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize Anthropic client
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+
+def extract_text(response):
+    """Concatenate the text blocks from a Claude response."""
+    return "".join(block.text for block in response.content if block.type == "text")
+
 
 # Define the specific markets we're interested in
 specific_markets = """
@@ -17,7 +23,7 @@ specific_markets = """
 4. Largest Company End of March? - This market will resolve to the company with the highest market capitalization as of market close on March 31, 2025.
 """
 
-# Create the prompt for the OpenAI API
+# Create the prompt for the Claude API
 prompt = f"""
 Search for the current odds on Polymarket.com for the following specific markets:
 
@@ -35,13 +41,14 @@ Format your response as a clear betting strategy with a summary of total expecte
 """
 
 # Get markets information
-result = client.chat.completions.create(
-    model="gpt-4o-search-preview",
+result = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=2048,
     messages=[{"role": "user", "content": prompt}],
-    web_search_options={}
+    tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 5}]
 )
 
 # Print results
 print(f"BETTING STRATEGY FOR POLYMARKET MARKETS ENDING TOMORROW ({datetime.now().strftime('%Y-%m-%d')})")
 print("=" * 80)
-print(result.choices[0].message.content) 
+print(extract_text(result))

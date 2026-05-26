@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, jsonify, flash, redirect, url_for
-import openai
+import anthropic
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Check for required environment variables
-required_env_vars = ["OPENAI_API_KEY", "FLASK_SECRET_KEY"]
+required_env_vars = ["ANTHROPIC_API_KEY", "FLASK_SECRET_KEY"]
 missing_vars = [var for var in required_env_vars if not os.getenv(var)]
 
 if missing_vars:
@@ -29,23 +29,23 @@ if missing_vars:
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY", "default-dev-key")
 
-# Initialize OpenAI client
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# Initialize Anthropic client
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 try:
-    client = openai.OpenAI(api_key=openai_api_key)
-    logger.info("OpenAI client initialized successfully")
+    client = anthropic.Anthropic(api_key=anthropic_api_key)
+    logger.info("Anthropic client initialized successfully")
 except Exception as e:
-    logger.error(f"Error initializing OpenAI client: {str(e)}")
+    logger.error(f"Error initializing Anthropic client: {str(e)}")
     client = None
 
-# Function to get market data using OpenAI's search capabilities
+# Function to get market data
 def get_market_data():
     # Get tomorrow's date
     tomorrow_date = datetime.now() + timedelta(days=1)
     tomorrow = tomorrow_date.strftime('%Y-%m-%d')
     tomorrow_display = tomorrow_date.strftime('%B %d, %Y')
     
-    # Create system prompt for OpenAI
+    # Create system prompt for the model
     system_prompt = f"""You are a highly accurate research assistant specialized in prediction markets. 
 Today is {datetime.now().strftime('%B %d, %Y')}. 
 Your task is to search the web for specific Polymarket prediction markets ending on {tomorrow_display}. 

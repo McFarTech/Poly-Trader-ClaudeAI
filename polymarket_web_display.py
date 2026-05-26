@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
-import openai
 import webbrowser
 import os
 from datetime import datetime, timedelta
 import random
-
-# Initialize OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Get tomorrow's date
 tomorrow_date = datetime.now() + timedelta(days=1)

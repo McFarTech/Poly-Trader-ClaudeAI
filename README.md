@@ -1,14 +1,14 @@
 # PolyTrader: AI-Powered Automated Trading System for Polymarket
 
-An autonomous AI trading agent for Polymarket that identifies market inefficiencies, calculates optimal bet sizes, and executes trades automatically. This system leverages ChatGPT's predictive capabilities against existing market odds to find profitable edges.
+An autonomous AI trading agent for Polymarket that identifies market inefficiencies, calculates optimal bet sizes, and executes trades automatically. This system leverages Claude's predictive capabilities against existing market odds to find profitable edges.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python 3.8+ installed
+- Python 3.11+ recommended (3.9 is the minimum required by the Anthropic SDK and py-clob-client; 3.8 is end-of-life)
 - A Polygon network wallet with MATIC (for gas) and USDC (for trading)
-- API keys for OpenAI and SerpAPI
+- API keys for Anthropic and SerpAPI
 - Basic understanding of prediction markets and crypto wallets
 
 ### Installation
@@ -46,7 +46,7 @@ python app.py
 ## 📋 Features
 
 * **Market Analysis:** Continuously scans Polymarket for opportunities
-* **AI-Powered Predictions:** Uses ChatGPT to analyze various events
+* **AI-Powered Predictions:** Uses Claude to analyze various events
 * **Edge Detection:** Compares AI predictions with market consensus to find inefficiencies
 * **Intelligent Bet Sizing:** Implements Kelly Criterion for optimal bankroll management
 * **Automated Execution:** Places trades via Polymarket Agents SDK
@@ -57,7 +57,7 @@ python app.py
 The system consists of three core modules:
 
 1. **Analysis Module**  
-   * Uses ChatGPT to analyze upcoming events  
+   * Uses Claude to analyze upcoming events  
    * Compares predictions with current Polymarket odds  
    * Identifies opportunities with significant edge
 
@@ -76,8 +76,8 @@ The system consists of three core modules:
 Edit your `.env` file with the following variables:
 
 ```
-# OpenAI API key (required for AI functionality)
-OPENAI_API_KEY=your_openai_api_key_here
+# Anthropic API key (required for AI functionality)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 # Flask app settings
 FLASK_SECRET_KEY=your_flask_secret_key_here
@@ -138,7 +138,7 @@ Siraj Raval
 
 ## 🙏 Acknowledgements
 
-* OpenAI for ChatGPT API
+* Anthropic for the Claude API
 * Polymarket team for the Agents SDK
 * All contributors and testers
 
